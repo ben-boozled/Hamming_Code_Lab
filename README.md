@@ -1,7 +1,7 @@
 # Background
 I built an interactive web application to demonstrate how Hamming codes detect and correct errors. Users can encode a custom message, corrupt the transmission, and decode the received message.
 
-The web application is hosted on Github Pages. Try it out here! [TBA] 
+The web application is hosted on Github Pages. [Try it out here!](https://ben-boozled.github.io/Hamming_Code_Lab/) 
 
 Alternatively, you can [run it locally](https://github.com/ben-boozled/Hamming_Code_Lab/tree/main#running-locally). Here is a preview of what to expect:
 
@@ -24,6 +24,9 @@ _Sidenote: This was intended to be a quick weekend project built and deployed us
 This is the project directory:
 ```
 Hamming_Code_Lab/
+├── .github
+│   ├── workflows
+│   │   └── deploy.yml              # configuration file for the CI/CD (test, build, deploy) to Github Pages
 ├── Images                          # stores the images used in this repository; not required to build and run the application
 ├── src
 │   ├── lib/                        # stores reusable app components
@@ -88,6 +91,9 @@ This is the expected result when `hamming.js` passes all test cases:
 <div align="center">
   <img src="https://github.com/ben-boozled/Hamming_Code_Lab/raw/main/Images/Hamming_Code_Unit_Tests.png" alt="Expected test results for hamming.js" width="700">
 </div>
+
+>[!IMPORTANT]
+> `.github/workflows/deploy.yml` has been written such that when changes are pushed to `main`, Github starts a Linux machine to test the code using `hamming.test.js`, build the new site, and deploy the updated site to Github Pages. Since the workflow is initiated when commits are pushed to `main`, changes that fail any of the tests in `hamming.test.js` will still be commited to `main`; only the building and deployment to Github Pages will be stopped.
 
 ## Building and Running in Production Mode
 The `.svelte` source files cannot run directly in the browser; they need to be converted into browser-readable HTML, CSS, and JavaScript assets first. Svelte uses Vite as the default build and development tool for this process. Note that the Hamming code web application built in this project is a static site. All of its interactivity comes from the JavaScript elements that are already part of the production build files. These JavaScript assets run on the user's own browser, not on any separate server.

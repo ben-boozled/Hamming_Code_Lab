@@ -1,0 +1,317 @@
+/* ---------------------------------------------
+ *               Global Design Settings
+ * --------------------------------------------- */
+:root{
+    color-scheme: dark;
+
+    /* Fonts */
+    --sans: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF mono', Menlo, Consolas, monospace;
+
+    /* General settings */
+    --bg: #181c25;
+    --surface: #1f242f;
+    --surface-2: #1c212b;
+    --border: #2e3441;
+    --border-strong: #434b5b;
+    --text: #d9dde5;
+    --text-strong: #eef0f5;
+    --muted: #8f98a8;
+
+    /* Bit statuses colour scheme */
+    --select: #ffc247;
+    --flip: #ff5c5c;
+    --ok: #5fd08a;
+
+    /* Bit types (data, parity, overall) colour scheme */
+    --data: #2f62c4;
+    --data-edge: #8db8ff;
+    --data-solid: var(--data-edge);
+
+    --parity: #1b7f55;
+    --parity-edge: #6fe0a8;
+    --parity-solid: var(--parity-edge);
+
+    --overall: #6d45c4;
+    --overall-edge: #bba2ff;
+    --overall-solid: var(--overall-edge);
+}
+
+/* Make every element include padding and borders within its width and height */
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 400 1rem/1.5 var(--sans);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------------------------------------------
+ *                    Top bar
+ * --------------------------------------------- */
+ .topbar{
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.5rem;
+    padding: 0.85rem max(1.25rem, calc((100vw - 1040px) / 2));
+    background: rgba(20, 22, 29, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+}
+.brand{ display: flex; align-items: center; gap: 0.8rem; min-width: 0; }
+.brand .mark { width: 2.1rem; height: 2.1rem; flex: none; }
+.brand h1 { margin: 0; font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01rem; color: var(--text-strong); }
+.brand p { margin: 0; font-size: 0.82rem; color: var(--muted); }
+
+.controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 0.5rem 1.6rem; }
+
+/* SECDED Toggle */
+.switch { display: flex; align-items: center; gap: 0.7rem; cursor: pointer; flex: none; }
+.switch input { position: absolute; opacity: 0; pointer-events: none; }
+.switch .track {
+    position: relative;
+    width: 2.6rem; 
+    height: 1.45rem;
+    border-radius: 999px;
+    background: var(--border-strong);
+    transition: background 0.15s;
+}
+/* Toggle Knob */
+.switch .track::after {
+    content: '';
+    position: absolute;
+    top: 0.17rem;
+    left: 0.2rem;
+    width: 1.09rem;
+    height: 1.09rem;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: transform 0.15s;
+}
+.switch input:checked + .track { background: var(--select); }
+.switch input:checked + .track::after { transform: translateX(1.1rem); }
+.switch input:focus-visible + .track { outline: 2px solid var(--select); outline-offset: 3px;} /* gives the track an outline when someone selects it with tab (can be toggled with spacebar when selected) */
+.switch-text { display: flex; flex-direction: column; line-height: 1.2; }
+.switch-text b { font-weight: 600; color: var(--text-strong); }
+.switch-text small { color: var(--muted); font-size: 0.78rem; }
+
+/* Legend */
+.legend { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin: 0; padding: 0; list-style: none; font-size: 0.78rem; color: var(--muted); }
+.legend li { display: flex; align-items: center; gap: 0.4rem; transition: opacity 0.15s; }
+.legend li.off {opacity: 0.35; }
+.sw { display: inline-block; width: 0.95rem; height: 0.95rem; border-radius: 4px; border: 1.5px solid var(--border-strong); }
+.sw.data { background: var(--data); border-color: var(--data-edge); }
+.sw.parity { background: var(--parity); border-color: var(--parity-edge); }
+.sw.overall { background: var(--overall); border-color: var(--overall-edge); }
+.sw.ring { background: transparent; border-width: 2.5px; margin: 0 0.15rem 0 0.1rem; }
+.sw.ring.select { border-color: var(--select); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--select); }
+.sw.ring.flip { border-color: var(--flip); box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--flip); }
+ 
+ /* ---------------------------------------------
+ *                 Overall Layout
+ * --------------------------------------------- */
+main { max-width: 1040px; margin: 0 auto; padding: 1.8rem 1.25rem 1rem; }
+
+/* User message input */
+.message {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.1rem 2rem;
+    align-items: start;
+    padding-bottom: 1.8rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solide var(--border);
+}
+.field label { display: block; margin-bottom: 0.4rem; font-weight: 500; color: var(--text-strong); }
+.field-row { position: relative; }
+.field-row input {
+    width: 100%;
+    padding: 0.7rem 8.5rem 0.7rem 0.95rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-strong);
+    font: 500 1.15rem var(--mono);
+}
+.field-row input:focus-visible { outline: 2px solid var (--select); outline-offset: 1px; border-color: transparent;}
+.count {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    columns: var(--muted);
+    pointer-events: none;
+}
+.count.over { color: var(--flip); }
+.field-note { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--muted); max-width: 60ch; }
+.field-note.error { color: #f4a3a3;}
+
+/* Code badge to display Hamming Code type */
+.code-badge { display: flex; flex-direction: column; gap: 0.1rem; padding-left: 1.2rem; border-left: 3px solid var(--select); min-width: 15rem; }
+.cb-label { font-size: 0.8rem; color: var(--muted); }
+.cb-value { font: 600 1.3rem var(--mono); color: var(--text-strong); }
+.cb-sub { font-size: 0.82rem; color: var(--muted); }
+
+/* Footer */
+footer { max-width: 1040px; text-align: center ; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--muted); }
+
+ /* ---------------------------------------------
+ *              Step 1 Content Layout
+ * --------------------------------------------- */
+ /* Text to Binary Table */
+ .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-2);}
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th { text-align: left; padding: 0.55rem 0.9rem; font-weight: 500; font-size: 0.82rem; color: var(--muted); border-bottom: 1px solid var(--border); background: var(--surface); }
+td { padding: 0.5rem 0.9rem; border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+td.mono { font-family: var(--mono); color: #b9c3ff; }
+td.char { font-size: 1.1rem; color: var(--text-strong); }
+
+/* Bit Stream to be Encoded */
+.stream-label { margin: 1rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
+.stream-label b { font-weight: 600; color: var(--text-strong); }
+.bytes { display: flex; flex-wrap: wrap; gap: 0.4rem 0.6rem; }
+.byte { padding: 0.3rem 0.6rem; border-radius: 6px; background: var(--surface-2); border: 1px solid var(--border); font: 500 0.88rem var(--mono); color: #b9c3ff}
+
+ /* ---------------------------------------------
+ *              Step 2 Content Layout
+ * --------------------------------------------- */
+/* Facts Row */
+.facts { display : flex; flex-wrap: wrap; margin: 0 0 1.2rem; padding: 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.facts > div { flex: 1 1 8rem; padding: 0.7rem 1rem 0.7rem 0; display: flex; flex-direction: column; }
+.facts > div + div { padding-left: 1rem; border-left: 1px solid var(--border); }
+.facts dt { font-size: 0.82rem; color: var(--muted); }
+.facts dd { margin: 0; font: 600 1.5rem/1.3 var(--mono); color: var(--text-strong); }
+.facts small { font-size: 0.78rem; color: var(--muted); }
+
+.panel {
+    padding: 0.9rem 1.1rem 0.7rem;
+    border-radius: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    width: 100%;
+}
+.panel .hint, .panel .mini { text-align: center; }
+.hint { margin: 0 0 0.7rem; font-size: 0.86rem; color: var(--muted); } 
+.mini { margin: 0.4rem 0 0.2rem; font-size: 0.84rem; color: var(--muted); }
+
+/* ---------------------------------------------
+*              Step 3 Content Layout
+* --------------------------------------------- */
+/* Buttons */
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 0.9rem; }
+.btn{
+   padding: 0.5rem 0.95rem;
+   border-radius: 8px;
+   border: 1px solid var(--border-strong);
+   background: var(--surface);
+   color: var(--text-strong);
+   font: 500 0.9rem var(--sans);
+   cursor: pointer;
+   transition: border-color 0.12s, background 0.12s;
+}
+.btn:hover:not(:disabled) { border-color: var(--select); }
+.btn:focus-visible { outline: 2px solid var(--select); outline-offset: 2px; }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn:disabled { opacity: 0.45; cursor: default; }
+
+/* Message Status Chips */
+.chip {
+   display: inline-block;
+   margin: 0.8rem 0 0;
+   padding: 0.22rem 0.75rem;
+   border-radius: 999px;
+   border: 1px solid var(--border-strong);
+   font: 500 0.82rem var(--mono);
+   color: var(--text);
+}
+.chip.ok { border-color: rgba(95, 208, 138, 0.5); background: rgba(95, 208, 138, 0.12); color: #9be5b6; }
+.chip.bad { border-color: rgba(239, 107, 107, 0.55); background: rgba(239, 1107, 107, 0.12); color: #f4a3a3; }
+
+/* ---------------------------------------------
+*              Step 4 Content Layout
+* --------------------------------------------- */
+h3 { margin: 1.6rem 0 0.6rem; font-size: 0.98rem; font-weight: 600; color: var(--text-strong); }
+
+/* Result Verdict */
+.verdicts { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.1rem; }
+.verdict { display: flex; flex-direction: column; min-width: 13rem; padding: 0.6rem 1rem; border-radius: 8px; border: 1px solid var(--border); border-left: 4px solid var(--border-strong); background: var(--surface); }
+.verdict.ok {border-left-color: var(--ok); }
+.verdict.warn {border-left-color: var(--select); }
+.verdict.err {border-left-color: var(--flip); }
+.vl, .vs { font-size: 0.8rem; color: var(--muted); }
+.vl { display: flex; align-items: center; gap: 0.4rem; }
+
+/* Diagnosis Tooltip */
+.tip-wrap { position: relative; display: inline-flex; }
+.tip-btn {
+    display: grid;
+    place-items: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--muted);
+    font: 600 0.72rem var(--sans);
+    cursor: help;
+}
+.tip-btn:hover, .tip-btn:focus-visible { color: var(--text-strong); border-color: var(--select); outline: none; }
+.tip {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 10px);
+    left: -0.6rem;
+    width: min(31rem, 86vw);
+    padding: 0.85rem 1rem 0.7rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-strong);
+    background: #252b38;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+    color: var(--text);
+    font-size: 0.85rem;
+    font-weight: 400;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.12s;
+}
+.tip::before { content: ''; position: absolute; left: 0; right: 0; top: -12px; height: 12px; } /* Keeps hover alive across the gap */
+.tip-wrap:hover .tip, .tip-wrap:focus-within .tip { visibility: visible; opacity: 1; }
+.tip-title { display: block; color: var(--text-strong); font-weight: 600; font-size: 0.9rem; }
+.rules { margin-top: 0.55rem; font-size: 0.82rem; }
+.rules th { background: transparent; padding: 0.35rem 0.6rem; }
+.rules td { padding: 0.4rem 0.6rem; color: var(--text); }
+.rules tr.active td { background: rgba(255, 194, 71, 0.16); color: var(--text-strong); font-weight: 500; }
+.tip-note { margin: 0.6rem 0 0; color: var(--muted); font-size: 0.8rem; line-height: 1.45; }
+.vv { font-size: 1.15rem; font-weight: 600; color: var(--text-strong); }
+
+/* ---------------------------------------------
+*              Step 5 Content Layout
+* --------------------------------------------- */
+/* Recovered Message Output */
+.out-box {
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font: 500 1.6rem/1.3 var(--mono);
+    color: var(--text-strong);
+    word-break: break-all;
+    min-height: 3.6rem;
+}
+.out-box.small { font-size: 1.15rem; margin-top: 0.7rem; }
+details { margin-top: 0.4rem; color: var(--muted); }
+summary { cursor: pointer; font-size: 0.9rem; }
+summary:focus-visible { outline: 2px solid var(--select); outline-offset: 3px; border-radius: 4px; }
+

@@ -11,7 +11,7 @@ name: Deploy to Github Pages  # label in the "Actions" tab
 on:
   push:
     branches: [main]
-  workflow dispatch:      # Adds a "Run workflow" button on the Actions tab (allows manual starting of workflow without pushing)
+  workflow_dispatch:      # Adds a "Run workflow" button on the Actions tab (allows manual starting of workflow without pushing)
 
 # Set required permissions (temporary access tokens) for the Pages
 permissions:

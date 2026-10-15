@@ -25,8 +25,8 @@ This is the project directory:
 ```
 Hamming_Code_Lab/
 ├── .github
-│   ├── workflows
-│   │   └── deploy.yml              # configuration file for the CI/CD (test, build, deploy) to Github Pages
+│   └── workflows
+│       └── deploy.yml              # configuration file for the CI/CD (test, build, deploy) to Github Pages
 ├── Images                          # stores the images used in this repository; not required to build and run the application
 ├── src
 │   ├── lib/                        # stores reusable app components

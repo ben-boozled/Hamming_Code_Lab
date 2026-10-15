@@ -1,0 +1,62 @@
+# Builds the site and publishes it to Github Pages on every push to the main branch
+
+# One-time setup before first push: In the repository settings, go to Pages > Build and deployment
+# Set the source to "Github Actions"
+
+# Useful reference: https://github.com/JamesIves/github-pages-deploy-action/tree/dev
+
+name: Deploy to Github Pages  # label in the "Actions" tab
+
+# Configurations for when to run the workflow
+on:
+  push:
+    branches: [main]
+  workflow dispatch:      # Adds a "Run workflow" button on the Actions tab (allows manual starting of workflow without pushing)
+
+# Set required permissions (temporary access tokens) for the Pages
+permissions:
+  contents: read    # download repo code
+  pages: write      # publish to Github Pages
+  id-token: write   # required to let the token prove its identity to the Pages service
+
+# If two deploys start at once, cancel the older one
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+# By default, all jobs (i.e. build and deploy) run in parallel
+jobs:
+  build: 
+    runs-on: ubuntu-latest # set Github to run on a Linux virtual machine
+    steps:
+      - uses: actions/checkout@v4  # copy repo files to machine
+
+      - uses: actions/setup-node@v4 # install Node.js v22 on the virtual machine
+        with:
+          node-version: 22
+
+      # Note: The following npm commands have been defined in package.json
+
+      # Use "npm ci" instead once package-lock.json is committed
+      - run: npm install
+
+      # A failing test stops the workflow to ensure any broken logic in hamming.js encode() and decode() never gets published
+      - run: npm test
+
+      # Produce the static site in dist/.
+      - run: npm run build
+
+      # Package the contents of dist/ into an artifact (i.e. a file saved by the workflow) 
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build  # forces the deploy job to wait for the build job to complete
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}   # read the page_url output from the step with the id "deployment"
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4   # takes the artifact from the build job and publishes it to Github Pages
